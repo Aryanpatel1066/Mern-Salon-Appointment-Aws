@@ -2,20 +2,25 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const bcrypt = require("bcryptjs");
-const sgMail = require("@sendgrid/mail");
+const nodemailer = require("nodemailer");
 
 const User = require("../models/User.model");
 const { generateOTP, hashOTP } = require("../helpers/otp.helper.js");
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
+ const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 /* ----------------------------------
    Helper: Send OTP Email
 ----------------------------------- */
 const sendOtpMail = async (email, otp, name = "User") => {
-  await sgMail.send({
+  await transporter.sendMail({
+    from: `"salonBliss" <${process.env.EMAIL_USER}>`,
     to: email,
-    from: "aryan.dev1066@gmail.com", // MUST be verified in SendGrid
     subject: "Your OTP for Password Reset",
     html: `
       <div style="font-family: Arial, sans-serif">
@@ -23,7 +28,6 @@ const sendOtpMail = async (email, otp, name = "User") => {
         <p>Your OTP for password reset is:</p>
         <h2 style="letter-spacing:2px">${otp}</h2>
         <p>This OTP will expire in <b>10 minutes</b>.</p>
-        <p>If you didn’t request this, please ignore this email.</p>
       </div>
     `,
   });

@@ -4,14 +4,22 @@ const User = require("../models/User.model");
 const Service = require("../models/Service.model");
 const Notification = require("../models/Notification.model");
 const SlotLock = require("../models/SlotLock.model");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// At the top of Booking.controller.js, replace SendGrid imports with:
+const nodemailer = require("nodemailer");
 
-const STATIC_LOCATION = "382860 city:vijapur house number 123"; 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+const STATIC_LOCATION = "382860 city:vijapur house number 123";
 let notificationMessage = "";
 
 //creat bookin (user)
- 
+
 exports.createBooking = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -85,7 +93,7 @@ exports.getBookingStatus = async (req, res) => {
 };
 
 
- // Get all bookings (Admin only) with cursor pagination
+// Get all bookings (Admin only) with cursor pagination
 exports.getAllBookings = async (req, res) => {
   try {
     let { limit = 10, cursor } = req.query;
@@ -95,7 +103,7 @@ exports.getAllBookings = async (req, res) => {
 
     // If cursor exists, load next page
     if (cursor) {
-      query._id = { $lt: cursor }; 
+      query._id = { $lt: cursor };
     }
 
     // Fetch one extra record to check hasMore
@@ -186,7 +194,7 @@ exports.updateBooking = async (req, res) => {
   try {
     const { service, date, timeSlot } = req.body;
     const bookingId = req.params.id;
-    const userId = req.user.id; 
+    const userId = req.user.id;
 
     const booking = await Booking.findById(bookingId);
     if (!booking) {
@@ -294,15 +302,37 @@ exports.updateBookingStatus = async (req, res) => {
 
     let subject = "";
     let text = "";
-
+    let notificationMessage = "";
     if (booking.status === "confirmed") {
       notificationMessage = `Your booking for "${serviceName}" on ${date} at ${time} has been confirmed.`;
+
       subject = "Your Booking is Confirmed!";
-      text = `Hi ${name || "User"},\n\nYour booking for "${serviceName}" has been confirmed.\n\n📅 Date: ${date}\n⏰ Time: ${time}\n📍 Location: ${STATIC_LOCATION}\n\n✅ Check your status in your profile.\n\nThank you for booking with us!\nSalonBlis App Team`;
+
+      text = `Hi ${name || "User"},
+
+Your booking for "${serviceName}" has been confirmed.
+
+📅 Date: ${date}
+⏰ Time: ${time}
+📍 Location: ${STATIC_LOCATION}
+
+✅ Check your status in your profile.
+
+Thank you for booking with us!
+SalonBlis App Team`;
+
     } else if (booking.status === "cancelled") {
       notificationMessage = `Your booking for "${serviceName}" on ${date} at ${time} has been cancelled.`;
+
       subject = "Your Booking Has Been Cancelled";
-      text = `Hi ${name || "User"},\n\nYour booking for "${serviceName}" on ${date} at ${time} has been cancelled.\n\nIf this was unexpected, please reach out to our support team.\n\nSalonBlis App Team`;
+
+      text = `Hi ${name || "User"},
+
+Your booking for "${serviceName}" on ${date} at ${time} has been cancelled.
+
+If this was unexpected, please reach out to our support team.
+
+SalonBlis App Team`;
     }
 
     // Save Notification
@@ -315,17 +345,18 @@ exports.updateBookingStatus = async (req, res) => {
 
     // Send email 
     if (subject && text) {
+      // ✅ With this:
       const msg = {
+        from: `"SalonBlis" <${process.env.EMAIL_USER}>`,
         to: email,
-        from: "aryan.dev1066@gmail.com", // VERIFIED IN SENDGRID
         subject,
         text,
         html: `<p>${text.replace(/\n/g, "<br/>")}</p>`,
       };
 
-      sgMail.send(msg)
+      transporter.sendMail(msg)
         .then(() => console.log("Email sent successfully"))
-        .catch(err => console.error("SendGrid email error:", err.response?.body || err));
+        .catch(err => console.error("Nodemailer email error:", err));
     }
 
     res.status(200).json({ message: "Booking status updated", booking });
@@ -380,14 +411,14 @@ exports.getBookedSlots = async (req, res) => {
   const userId = req.user?.id;
 
   // ✅ Only count non-cancelled bookings as "booked"
-  const bookings = await Booking.find({ 
-    date, 
+  const bookings = await Booking.find({
+    date,
     status: { $ne: "cancelled" }  // 👈 ADD THIS LINE
   }).select("timeSlot");
 
-  const locks = await SlotLock.find({ 
-    date, 
-    user: { $ne: userId } 
+  const locks = await SlotLock.find({
+    date,
+    user: { $ne: userId }
   }).select("timeSlot");
 
   const bookedSlots = bookings.map(b => b.timeSlot);
