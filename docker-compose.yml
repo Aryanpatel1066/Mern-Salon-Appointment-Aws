@@ -9,6 +9,7 @@ services:
       - "1066:1066"
     env_file:
       - ./backend/.env
+    mem_limit: 256m
     restart: unless-stopped
 
   frontend:
@@ -21,4 +22,5 @@ services:
       - "3000:80"
     depends_on:
       - backend
+    mem_limit: 64m
     restart: unless-stopped
