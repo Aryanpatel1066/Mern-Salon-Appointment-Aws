@@ -25,6 +25,9 @@ jobs:
           npm ci
 
       - name: Test backend
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           cd backend
           npm test --if-present
