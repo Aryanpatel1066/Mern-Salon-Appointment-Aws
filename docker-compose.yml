@@ -16,7 +16,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: http://localhost:1066
+        VITE_API_URL: http://13.201.162.181:1066
     container_name: salon-frontend
     ports:
       - "3000:80"
