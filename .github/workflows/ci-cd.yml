@@ -50,7 +50,7 @@ jobs:
       - name: Build frontend
         run: |
           cd frontend
-          VITE_API_URL=http://localhost:1066 npm run build
+          VITE_API_URL=http://13.201.162.181:1066/api npm run build
 
   docker:
     needs: ci
@@ -84,7 +84,24 @@ jobs:
           context: ./frontend
           push: true
           build-args: |
-            VITE_API_URL=http://localhost:1066
+            VITE_API_URL=http://13.201.162.181:1066/api
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/salon-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/salon-frontend:${{ github.sha }}
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/Mern-Salon-Appointment-Aws
+            sudo docker compose pull
+            sudo docker compose down
+            sudo docker compose up -d

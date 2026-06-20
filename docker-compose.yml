@@ -2,25 +2,19 @@ version: "3.9"
 
 services:
   backend:
-    build:
-      context: ./backend
+    image: aryanpatel1066/salon-backend:latest
     container_name: salon-backend
     ports:
       - "1066:1066"
     env_file:
       - ./backend/.env
-    mem_limit: 256m
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_URL: http://13.201.162.181:1066
+    image: aryanpatel1066/salon-frontend:latest
     container_name: salon-frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
-    mem_limit: 64m
     restart: unless-stopped
