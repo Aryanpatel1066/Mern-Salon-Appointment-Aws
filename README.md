@@ -1,57 +1,127 @@
-# 💇‍♀️ Salon Bliss – MERN Appointment Booking App
+# 🚀 SalonBliss – DevOps Deployment Project
 
-**Salon Bliss** is a full-stack salon appointment booking application built using the **MERN stack** (MongoDB, Express.js, React, Node.js). It allows customers to register, log in, book services, and view their bookings, while admins can manage users, services, and appointments.
-
----
-
-## 🚀 Live Demo
-
-- 🔗 Frontend: [https://mern-salon-apointment.vercel.app](https://mern-salon-apointment.vercel.app)
-- 🔗 Backend API: [https://mern-salon-apointment.onrender.com](https://mern-salon-apointment.onrender.com)
+SalonBliss is a full-stack MERN application deployed using modern DevOps practices. The project demonstrates containerization, CI/CD automation, cloud deployment, monitoring, and infrastructure management using AWS and Docker-based workflows.
 
 ---
 
-## ✨ Features
+## 🌐 Live Deployment
 
-### 👩‍💼 Customer
-- Register and login securely
-- Browse and book available services
-- View and manage bookings
-- Forgot password option
-
-### 🛠️ Admin
-- Admin login with auto-created default admin
-- Manage all users
-- Add/update/delete services
-- View and manage bookings
-- Send notifications (email/SMS ready)
+* Application: http://13.201.162.181:3000/
+* Frontend: React.js
+* Backend: Node.js + Express.js
+* Database: MongoDB Atlas
 
 ---
 
-## 🧰 Tech Stack
+## 🏗️ DevOps Architecture
 
-- **Frontend**: React, Tailwind CSS, Axios, React Router, Toastify
-- **Backend**: Node.js, Express.js, Mongoose, JWT, Bcrypt, Nodemailer
-- **Database**: MongoDB Atlas
-- **Deployment**: Vercel (frontend), Render (backend)
+GitHub
+↓
+GitHub Actions (CI/CD)
+↓
+Docker Image Build
+↓
+Docker Hub Registry
+↓
+AWS EC2 Deployment
+↓
+Docker Compose
+↓
+CloudWatch Monitoring
 
 ---
 
-## 🛠️ Setup Instructions
+## ⚙️ Key DevOps Implementations
 
-### 📦 Clone the Repository
+### 🐳 Containerization
+
+* Dockerized frontend and backend services.
+* Multi-container deployment using Docker Compose.
+* Environment-based configuration management.
+
+### 🔄 CI/CD Automation
+
+* Automated build and deployment pipeline using GitHub Actions.
+* Docker image creation and publishing.
+* Continuous deployment to AWS EC2 using SSH workflows.
+
+### ☁️ AWS Infrastructure
+
+* Application deployed on AWS EC2.
+* Configured IAM, Security Groups, and networking rules.
+* Monitored server health and application performance using CloudWatch.
+
+### 📊 Monitoring
+
+* AWS CloudWatch integration for infrastructure monitoring.
+* Log inspection and server resource tracking.
+
+### 🔐 Security
+
+* JWT authentication and authorization.
+* Environment variable management.
+* Secure deployment using SSH keys.
+
+---
+
+## 🛠️ Tech Stack
+
+### Application
+
+* React.js
+* Node.js
+* Express.js
+* MongoDB Atlas
+
+### DevOps
+
+* Docker
+* Docker Compose
+* GitHub Actions
+* AWS EC2
+* AWS IAM
+* AWS CloudWatch
+* Linux
+* Nginx
+
+---
+
+## 🚀 Local Setup
+
+### Clone Repository
+
 ```bash
-git clone https://github.com/your-username/salon-bliss.git
+git clone <repository-url>
 cd salon-bliss
-cd frontend
-npm install
-npm run dev
 ```
 
-## 🤝 Contributing
-Pull requests are welcome! For major changes, open an issue first to discuss what you’d like to change.
+### Start Application
 
+```bash
+docker-compose up -d
+```
 
-###  🎨 ui design
-![Image](https://github.com/user-attachments/assets/32467836-429f-444a-b44d-5f1df5968df8)
-![Image](https://github.com/user-attachments/assets/9d469510-6b11-4bb4-915b-bf1b2a75d57d)
+### Verify Containers
+
+```bash
+docker ps
+```
+
+---
+
+## 📈 Future Enhancements
+
+* Kubernetes Deployment
+* Terraform Infrastructure Provisioning
+* Grafana & Prometheus Monitoring Stack
+* Blue-Green Deployment Strategy
+* AWS Load Balancer Integration
+
+---
+
+## 👨‍💻 Author
+
+Aryan Patel
+
+* LinkedIn: https://linkedin.com/in/aryanpatel1066
+* Portfolio: https://aryanpatel.vercel.app
